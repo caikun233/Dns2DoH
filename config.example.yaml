@@ -1,0 +1,91 @@
+# DNS to DoH Converter Configuration
+
+# UDP DNS server configuration
+server:
+  # Listen address
+  listen: "0.0.0.0:53"
+  # Timeout in seconds
+  timeout: 5
+
+# DoH server configuration
+doh:
+  # DoH server list (will try in order)
+  servers:
+    - url: "https://cloudflare-dns.com/dns-query"
+      name: "Cloudflare"
+    - url: "https://dns.google/dns-query"
+      name: "Google"
+    - url: "https://dns.alidns.com/dns-query"
+      name: "AliDNS"
+  
+  # DoH request timeout in seconds
+  timeout: 10
+  
+  # Enable HTTP/2
+  use_http2: true
+
+# TLS advanced options
+tls:
+  # Enable TLS advanced options
+  enabled: false
+  
+  # Print certificate information
+  print_cert_info: false
+  
+  # Certificate pinning - lock certificate issuer
+  # If enabled, only accept certificates from specified issuers
+  pin_cert_issuer: false
+  
+  # List of allowed certificate issuers (Common Names)
+  # Only effective when pin_cert_issuer is true
+  allowed_issuers:
+    - "DigiCert Global Root CA"
+    - "ISRG Root X1"  # Let's Encrypt
+    - "GlobalSign Root CA"
+  
+  # Skip TLS verification (NOT RECOMMENDED for production)
+  insecure_skip_verify: false
+
+# Logging configuration
+logging:
+  # Log level: debug, info, warn, error
+  level: "info"
+  
+  # Query logging configuration
+  query_log:
+    # Enable query logging
+    enabled: true
+    
+    # Log target: console, file, database
+    target: "console"
+    
+    # File logging options (when target is "file")
+    file:
+      # File format: csv, json
+      format: "json"
+      # Log file path
+      path: "logs/queries.log"
+      # Maximum file size in MB before rotation
+      max_size: 100
+      # Maximum number of old log files to retain
+      max_backups: 5
+      # Maximum age in days to retain log files
+      max_age: 30
+    
+    # Database logging options (when target is "database")
+    database:
+      # Database type: sqlite, postgresql
+      type: "sqlite"
+      
+      # SQLite configuration
+      sqlite:
+        path: "logs/queries.db"
+      
+      # PostgreSQL configuration
+      postgresql:
+        host: "localhost"
+        port: 5432
+        database: "dns2doh"
+        user: "dns2doh"
+        password: "your_password"
+        sslmode: "disable"  # disable, require, verify-ca, verify-full
