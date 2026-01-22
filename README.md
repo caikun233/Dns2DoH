@@ -49,30 +49,9 @@ cd Dns2DoH
 
 ### Usage
 
-#### Basic Usage
-
 ```bash
 # Start the DNS to DoH converter
 # Command to be added based on implementation
-```
-
-#### Configuration
-
-The converter can be configured using a configuration file or command-line arguments:
-
-- **Listen Address**: The local address and port to listen for DNS queries (default: `0.0.0.0:53`)
-- **DoH Server**: The DNS-over-HTTPS server endpoint (e.g., `https://dns.google/dns-query`)
-- **Timeout**: Request timeout in seconds
-- **Cache**: Enable/disable DNS response caching
-
-#### Example Configuration
-
-```yaml
-# Configuration example to be added
-listen: "0.0.0.0:53"
-doh_server: "https://dns.google/dns-query"
-timeout: 5
-cache_enabled: true
 ```
 
 ### Popular DoH Servers
@@ -82,26 +61,6 @@ cache_enabled: true
 - **Quad9**: `https://dns.quad9.net/dns-query`
 - **AdGuard DNS**: `https://dns.adguard.com/dns-query`
 - **OpenDNS**: `https://doh.opendns.com/dns-query`
-
-### Use Cases
-
-- **Privacy Enhancement**: Encrypt DNS queries to prevent ISP monitoring
-- **Bypass DNS Filtering**: Access blocked content by using alternative DoH servers
-- **Legacy System Support**: Enable DoH for devices that only support traditional DNS
-- **Network Testing**: Test and compare different DoH providers
-- **Development**: Integrate DoH support into applications without modifying them
-
-### Performance Considerations
-
-- DNS responses may be cached to improve performance
-- HTTPS connection pooling reduces latency for subsequent queries
-- Concurrent query handling for better throughput
-
-### Security
-
-- All DNS queries are encrypted using HTTPS/TLS
-- Server certificate validation ensures connection security
-- No logging of DNS queries (depending on DoH server policy)
 
 ### Contributing
 
@@ -163,30 +122,9 @@ cd Dns2DoH
 
 ### 使用方法
 
-#### 基本使用
-
 ```bash
 # 启动 DNS 到 DoH 转换器
 # 根据实现添加命令
-```
-
-#### 配置
-
-转换器可以通过配置文件或命令行参数进行配置：
-
-- **监听地址**：监听 DNS 查询的本地地址和端口（默认：`0.0.0.0:53`）
-- **DoH 服务器**：DNS-over-HTTPS 服务器端点（例如：`https://dns.google/dns-query`）
-- **超时时间**：请求超时时间（秒）
-- **缓存**：启用/禁用 DNS 响应缓存
-
-#### 配置示例
-
-```yaml
-# 配置示例待添加
-listen: "0.0.0.0:53"
-doh_server: "https://dns.google/dns-query"
-timeout: 5
-cache_enabled: true
 ```
 
 ### 常用 DoH 服务器
@@ -196,26 +134,6 @@ cache_enabled: true
 - **Quad9**: `https://dns.quad9.net/dns-query`
 - **AdGuard DNS**: `https://dns.adguard.com/dns-query`
 - **OpenDNS**: `https://doh.opendns.com/dns-query`
-
-### 使用场景
-
-- **隐私增强**：加密 DNS 查询以防止 ISP 监控
-- **绕过 DNS 过滤**：通过使用替代 DoH 服务器访问被屏蔽的内容
-- **传统系统支持**：为仅支持传统 DNS 的设备启用 DoH
-- **网络测试**：测试和比较不同的 DoH 提供商
-- **开发**：在不修改应用程序的情况下集成 DoH 支持
-
-### 性能考虑
-
-- DNS 响应可以被缓存以提高性能
-- HTTPS 连接池减少后续查询的延迟
-- 并发查询处理以获得更好的吞吐量
-
-### 安全性
-
-- 所有 DNS 查询都使用 HTTPS/TLS 加密
-- 服务器证书验证确保连接安全
-- 不记录 DNS 查询（取决于 DoH 服务器政策）
 
 ### 贡献
 
