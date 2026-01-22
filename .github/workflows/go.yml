@@ -15,13 +15,9 @@ jobs:
     strategy:
       matrix:
         include:
-          # Android
-          - goos: android
-            goarch: arm64
-            label: android-arm64
-          - goos: android
-            goarch: amd64
-            label: android-amd64
+          # Android targets removed because they require CGO/NDK
+          # Use linux-arm64/amd64 for Android (Termux)
+          
           # FreeBSD
           - goos: freebsd
             goarch: 386
