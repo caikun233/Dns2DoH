@@ -1,4 +1,4 @@
-# Dns2DoH
+# DNS to DoH Converter
 
 [English](#english) | [中文](#中文)
 
@@ -6,144 +6,294 @@
 
 ## English
 
-### Overview
-
-Dns2DoH is a lightweight DNS to DNS-over-HTTPS (DoH) converter that acts as a bridge between traditional UDP DNS clients and modern DoH servers. It accepts standard UDP DNS queries on port 53 and forwards them to DoH servers over HTTPS, providing enhanced privacy and security for DNS resolution.
+A lightweight DNS to DoH (DNS over HTTPS) converter built with Golang. It accepts traditional UDP DNS queries and forwards them to DoH servers via HTTPS.
 
 ### Features
 
-- **UDP DNS Server**: Accepts traditional DNS queries over UDP protocol
-- **DoH Client**: Forwards queries to DNS-over-HTTPS servers
-- **Transparent Conversion**: Seamlessly converts between UDP DNS and DoH protocols
-- **Privacy & Security**: Encrypts DNS queries using HTTPS
-- **Easy Configuration**: Simple setup with customizable DoH server endpoints
-- **Lightweight**: Minimal resource usage and fast response times
-- **Cross-Platform**: Works on Linux, Windows, and macOS
-
-### How It Works
-
-```
-Client (UDP DNS Query) → Dns2DoH → DoH Server (HTTPS) → DoH Server Response → Dns2DoH → Client (UDP DNS Response)
-```
-
-1. Client sends a standard UDP DNS query to Dns2DoH (usually on port 53)
-2. Dns2DoH receives the query and converts it to DoH format
-3. The query is sent to a configured DoH server over HTTPS
-4. DoH server processes the query and returns the response
-5. Dns2DoH converts the response back to UDP DNS format
-6. Client receives the DNS response as if from a traditional DNS server
+- ✅ Accept UDP DNS queries
+- ✅ Forward queries via DoH (DNS over HTTPS) protocol
+- ✅ Multiple DoH servers support (automatic failover)
+- ✅ YAML configuration file
+- ✅ Customizable listen address and port
+- ✅ HTTP/2 support
+- ✅ Detailed query logging (Console, File, SQLite, PostgreSQL)
+- ✅ TLS certification verification control
+- ✅ Support all DNS record types (A, AAAA, CNAME, MX, TXT, etc.)
 
 ### Installation
 
 #### Prerequisites
 
-- [To be added based on implementation language]
+- Go 1.21 or higher
 
-#### From Source
+#### Build from Source
 
 ```bash
-git clone https://github.com/caikun233/Dns2DoH.git
+# Clone the repository
+git clone https://github.com/yourusername/Dns2DoH.git
 cd Dns2DoH
-# Build instructions to be added
+
+# Download dependencies
+go mod download
+
+# Build (CGO not required for SQLite)
+go build -o dns2doh.exe
 ```
+
+### Configuration
+
+Please refer to [CONFIGURATION.md](CONFIGURATION.md) for detailed configuration instructions.
 
 ### Usage
 
+#### Start the Server
+
 ```bash
-# Start the DNS to DoH converter
-# Command to be added based on implementation
+# Use default config file (config.yaml)
+./dns2doh.exe
+
+# Use custom config file
+./dns2doh.exe -config /path/to/config.yaml
+```
+
+#### Test DNS Queries
+
+Test using `nslookup` or `dig`:
+
+```bash
+# Windows (PowerShell)
+nslookup google.com 127.0.0.1
+
+# Linux/Mac
+dig @127.0.0.1 google.com
+```
+
+#### Windows Service
+
+To run without admin privileges on port 53, change the port to a value greater than 1024 (e.g., 5353):
+
+```yaml
+server:
+  listen: "0.0.0.0:5353"
 ```
 
 ### Popular DoH Servers
 
-- **Google Public DNS**: `https://dns.google/dns-query`
-- **Cloudflare DNS**: `https://cloudflare-dns.com/dns-query`
-- **Quad9**: `https://dns.quad9.net/dns-query`
-- **AdGuard DNS**: `https://dns.adguard.com/dns-query`
-- **OpenDNS**: `https://doh.opendns.com/dns-query`
+Here are some available public DoH servers:
 
-### Contributing
+| Provider | DoH URL |
+|----------|---------|
+| Cloudflare | https://cloudflare-dns.com/dns-query |
+| Google | https://dns.google/dns-query |
+| Quad9 | https://dns.quad9.net/dns-query |
+| Alibaba DNS | https://dns.alidns.com/dns-query |
+| DNSPod | https://doh.pub/dns-query |
+| 360 DNS | https://doh.360.cn/dns-query |
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+### Project Structure
+
+```
+Dns2DoH/
+├── main.go          # Main program entry
+├── dns_handler.go   # DNS request handling
+├── doh_client.go    # DoH client implementation
+├── config.yaml      # Configuration file
+├── go.mod           # Go module dependencies
+└── README.md        # Project documentation
+```
+
+### Log Example
+
+```
+2026/01/22 10:30:00 DNS to DoH converter starting...
+2026/01/22 10:30:00 Listen address: 0.0.0.0:53
+2026/01/22 10:30:00 Configured 3 DoH servers:
+2026/01/22 10:30:00   [1] Cloudflare - https://cloudflare-dns.com/dns-query
+2026/01/22 10:30:00   [2] Google - https://dns.google/dns-query
+2026/01/22 10:30:00   [3] AliDNS - https://dns.alidns.com/dns-query
+2026/01/22 10:30:00 UDP DNS server listening on 0.0.0.0:53
+2026/01/22 10:30:15 Query received: google.com. (type: A) from: 192.168.1.100:54321
+2026/01/22 10:30:15 Query successful: google.com. -> 1 answers (elapsed: 45ms)
+2026/01/22 10:30:15   A record: google.com. -> 142.250.185.46 (TTL: 300)
+```
+
+### Tech Stack
+
+- **Language**: Go 1.21+
+- **DNS Library**: github.com/miekg/dns
+- **YAML Parser**: gopkg.in/yaml.v3
+- **HTTP/2**: golang.org/x/net/http2
 
 ### License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+See [LICENSE](LICENSE) file for details.
 
-### Acknowledgments
+### Contributing
 
-- DNS-over-HTTPS (DoH) specification: [RFC 8484](https://tools.ietf.org/html/rfc8484)
-- Inspired by the need for privacy-preserving DNS resolution
+Issues and Pull Requests are welcome!
+
+### FAQ
+
+#### Q: How to run with admin privileges on Windows?
+
+A: Right-click the program and select "Run as administrator", or change the listen port to a value greater than 1024.
+
+#### Q: Does it support IPv6?
+
+A: Yes, the program fully supports IPv6 DNS queries (AAAA records).
+
+#### Q: How to add custom DoH servers?
+
+A: Add new server entries in the `doh.servers` section of `config.yaml`.
+
+#### Q: What are the resource requirements?
+
+A: Very lightweight, typically 10-20MB memory usage with minimal CPU usage.
 
 ---
 
 ## 中文
 
-### 概述
-
-Dns2DoH 是一个轻量级的 DNS 到 DNS-over-HTTPS (DoH) 转换器，充当传统 UDP DNS 客户端和现代 DoH 服务器之间的桥梁。它在 53 端口接受标准的 UDP DNS 查询，并通过 HTTPS 将它们转发到 DoH 服务器，为 DNS 解析提供增强的隐私和安全性。
+一个基于 Golang 的 DNS 到 DoH (DNS over HTTPS) 转换器，可以接收传统的 UDP DNS 查询请求，并通过 DoH 协议转发到上游 DNS 服务器。
 
 ### 功能特性
 
-- **UDP DNS 服务器**：接受通过 UDP 协议的传统 DNS 查询
-- **DoH 客户端**：将查询转发到 DNS-over-HTTPS 服务器
-- **透明转换**：在 UDP DNS 和 DoH 协议之间无缝转换
-- **隐私与安全**：使用 HTTPS 加密 DNS 查询
-- **简易配置**：可自定义 DoH 服务器端点的简单设置
-- **轻量级**：资源占用少，响应速度快
-- **跨平台**：支持 Linux、Windows 和 macOS
-
-### 工作原理
-
-```
-客户端 (UDP DNS 查询) → Dns2DoH → DoH 服务器 (HTTPS) → DoH 服务器响应 → Dns2DoH → 客户端 (UDP DNS 响应)
-```
-
-1. 客户端向 Dns2DoH 发送标准 UDP DNS 查询（通常在 53 端口）
-2. Dns2DoH 接收查询并将其转换为 DoH 格式
-3. 通过 HTTPS 将查询发送到配置的 DoH 服务器
-4. DoH 服务器处理查询并返回响应
-5. Dns2DoH 将响应转换回 UDP DNS 格式
-6. 客户端接收 DNS 响应，就像来自传统 DNS 服务器一样
+- ✅ 接收 UDP DNS 查询请求
+- ✅ 通过 DoH (DNS over HTTPS) 协议转发查询
+- ✅ 支持多个 DoH 服务器（自动故障转移）
+- ✅ YAML 配置文件支持
+- ✅ 可自定义监听地址和端口
+- ✅ HTTP/2 支持
+- ✅ 详细的查询日志（支持控制台、文件、SQLite、PostgreSQL）
+- ✅ TLS 证书校验控制
+- ✅ 支持所有 DNS 记录类型（A, AAAA, CNAME, MX, TXT 等）
 
 ### 安装
 
 #### 前置要求
 
-- [根据实现语言添加]
+- Go 1.21 或更高版本
 
-#### 从源码安装
+#### 从源码编译
 
 ```bash
-git clone https://github.com/caikun233/Dns2DoH.git
+# 克隆仓库
+git clone https://github.com/yourusername/Dns2DoH.git
 cd Dns2DoH
-# 构建说明待添加
+
+# 安装依赖
+go mod download
+
+# 编译 (SQLite 无需 CGO 环境)
+go build -o dns2doh.exe
 ```
+
+### 配置
+
+请参考 [CONFIGURATION.md](CONFIGURATION.md) 查看详细的配置说明。
 
 ### 使用方法
 
+#### 启动服务器
+
 ```bash
-# 启动 DNS 到 DoH 转换器
-# 根据实现添加命令
+# 使用默认配置文件（config.yaml）
+./dns2doh.exe
+
+# 使用自定义配置文件
+./dns2doh.exe -config /path/to/config.yaml
 ```
 
-### 常用 DoH 服务器
+#### 测试 DNS 查询
 
-- **Google Public DNS**: `https://dns.google/dns-query`
-- **Cloudflare DNS**: `https://cloudflare-dns.com/dns-query`
-- **Quad9**: `https://dns.quad9.net/dns-query`
-- **AdGuard DNS**: `https://dns.adguard.com/dns-query`
-- **OpenDNS**: `https://doh.opendns.com/dns-query`
+使用 `nslookup` 或 `dig` 工具测试：
 
-### 贡献
+```bash
+# Windows (PowerShell)
+nslookup google.com 127.0.0.1
 
-欢迎贡献！请随时提交 Pull Request。
+# Linux/Mac
+dig @127.0.0.1 google.com
+```
+
+#### Windows 服务运行
+
+如果需要在非管理员权限下监听 53 端口，可以修改配置文件中的端口为大于 1024 的端口（如 5353）：
+
+```yaml
+server:
+  listen: "0.0.0.0:5353"
+```
+
+### 常见 DoH 服务器
+
+以下是一些可用的公共 DoH 服务器：
+
+| 提供商 | DoH URL |
+|--------|---------|
+| Cloudflare | https://cloudflare-dns.com/dns-query |
+| Google | https://dns.google/dns-query |
+| Quad9 | https://dns.quad9.net/dns-query |
+| 阿里 DNS | https://dns.alidns.com/dns-query |
+| DNSPod | https://doh.pub/dns-query |
+| 360 DNS | https://doh.360.cn/dns-query |
+
+### 项目结构
+
+```
+Dns2DoH/
+├── main.go          # 主程序入口
+├── dns_handler.go   # DNS 请求处理
+├── doh_client.go    # DoH 客户端实现
+├── config.yaml      # 配置文件
+├── go.mod           # Go 模块依赖
+└── README.md        # 项目说明
+```
+
+### 日志示例
+
+```
+2026/01/22 10:30:00 DNS to DoH 转换器启动中...
+2026/01/22 10:30:00 监听地址: 0.0.0.0:53
+2026/01/22 10:30:00 配置了 3 个 DoH 服务器:
+2026/01/22 10:30:00   [1] Cloudflare - https://cloudflare-dns.com/dns-query
+2026/01/22 10:30:00   [2] Google - https://dns.google/dns-query
+2026/01/22 10:30:00   [3] AliDNS - https://dns.alidns.com/dns-query
+2026/01/22 10:30:00 UDP DNS 服务器正在监听 0.0.0.0:53
+2026/01/22 10:30:15 收到查询: google.com. (类型: A) 来自: 192.168.1.100:54321
+2026/01/22 10:30:15 查询成功: google.com. -> 1 条应答 (耗时: 45ms)
+2026/01/22 10:30:15   A 记录: google.com. -> 142.250.185.46 (TTL: 300)
+```
+
+### 技术栈
+
+- **语言**: Go 1.21+
+- **DNS 库**: github.com/miekg/dns
+- **YAML 解析**: gopkg.in/yaml.v3
+- **HTTP/2**: golang.org/x/net/http2
 
 ### 许可证
 
-本项目采用 MIT 许可证 - 详见 [LICENSE](LICENSE) 文件。
+查看 [LICENSE](LICENSE) 文件了解详情。
 
-### 致谢
+### 贡献
 
-- DNS-over-HTTPS (DoH) 规范：[RFC 8484](https://tools.ietf.org/html/rfc8484)
-- 受隐私保护 DNS 解析需求的启发
+欢迎提交 Issue 和 Pull Request！
+
+### 常见问题
+
+#### Q: 如何在 Windows 上以管理员权限运行？
+
+A: 右键点击程序，选择"以管理员身份运行"，或者修改监听端口为大于 1024 的端口。
+
+#### Q: 支持 IPv6 吗？
+
+A: 是的，程序完全支持 IPv6 DNS 查询（AAAA 记录）。
+
+#### Q: 如何添加自定义 DoH 服务器？
+
+A: 在 `config.yaml` 的 `doh.servers` 部分添加新的服务器条目即可。
+
+#### Q: 程序占用多少资源？
+
+A: 非常轻量，内存占用通常在 10-20MB 左右，CPU 占用极低。
