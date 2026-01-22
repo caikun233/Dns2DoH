@@ -19,9 +19,9 @@ jobs:
           # Use linux-arm64/amd64 for Android (Termux)
           
           # FreeBSD
-          - goos: freebsd
-            goarch: 386
-            label: freebsd-32
+          # - goos: freebsd
+          #   goarch: 386
+          #   label: freebsd-32
           - goos: freebsd
             goarch: amd64
             label: freebsd-64
@@ -34,7 +34,7 @@ jobs:
             label: linux-64
           - goos: linux
             goarch: arm64
-            label: linuxarm-64
+            label: linux-arm64
           # macOS
           - goos: darwin
             goarch: amd64
